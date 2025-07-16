@@ -69,53 +69,205 @@ Food-classification/
 
 ### Prerequisites
 
+- **Python 3.7+** 
+- **Git** (for cloning the repository)
+- **Internet connection** (for downloading dependencies and dataset)
+
+### Quick Setup
+
+Follow these steps to get the project running on your machine:
+
+#### 1. **Clone the repository**
 ```bash
-Python 3.7+
-PyTorch
-torchvision
-matplotlib
-Pillow
-tensorboard
+git clone https://github.com/CYBki/Food-classification.git
+cd Food-classification
 ```
 
-### Installation
+#### 2. **Install dependencies**
+```bash
+# Install PyTorch and related libraries
+pip install torch torchvision torchaudio
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/CYBki/Food-classification.git
-   cd Food-classification
-   ```
+# Install additional dependencies  
+pip install matplotlib pillow tensorboard jupyter tqdm requests
+```
 
-2. **Install dependencies**
-   ```bash
-   pip install torch torchvision torchaudio
-   pip install matplotlib pillow tensorboard jupyter
-   ```
+#### 3. **Download the dataset**
+```bash
+# Run the automated dataset download script
+python download_data.py
+```
+This script will:
+- ✅ Download the pizza_steak_sushi dataset (if not already present)
+- ✅ Extract it to the correct directory structure
+- ✅ Verify the setup was successful
 
-3. **Verify installation**
-   ```python
-   import torch
-   print(f"PyTorch version: {torch.__version__}")
-   print(f"CUDA available: {torch.cuda.is_available()}")
-   ```
+#### 4. **Train the model**
+```bash
+# Navigate to the training script directory
+cd PyTorch_Going_Modular/going_modular
 
-### Quick Start
+# Start training with informative output
+python train.py
+```
 
-1. **Using the modular training script:**
-   ```bash
-   cd PyTorch_Going_Modular/going_modular
-   python train.py
-   ```
+#### 5. **Verify installation (Optional)**
+```python
+import torch
+print(f"PyTorch version: {torch.__version__}")
+print(f"CUDA available: {torch.cuda.is_available()}")
+```
 
-2. **Launch Jupyter for interactive exploration:**
-   ```bash
-   jupyter notebook
-   ```
+### Alternative Training Locations
 
-3. **Monitor training with TensorBoard:**
-   ```bash
-   tensorboard --logdir=Experiment_tracking/runs
-   ```
+The repository contains multiple copies of the training script for different experiments:
+
+```bash
+# Main modular training (recommended)
+cd PyTorch_Going_Modular/going_modular && python train.py
+
+# Transfer learning experiments  
+cd Transfer__learning/PyTorch_Going_Modular/going_modular && python train.py
+
+# Experiment tracking version
+cd Experiment_tracking/PyTorch_Going_Modular/going_modular && python train.py
+
+# Paper replication version
+cd PyTorch_paper_replicating/PyTorch_Going_Modular/going_modular && python train.py
+```
+
+### Interactive Exploration
+
+For Jupyter notebook exploration:
+```bash
+jupyter notebook
+```
+
+For TensorBoard monitoring:
+```bash
+tensorboard --logdir=Experiment_tracking/runs
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### ❌ `FileNotFoundError: [Errno 2] No such file or directory: 'data/pizza_steak_sushi/train'`
+
+**Solution:** Run the dataset download script first:
+```bash
+python download_data.py
+```
+
+#### ❌ `ModuleNotFoundError: No module named 'torch'`
+
+**Solution:** Install PyTorch:
+```bash
+pip install torch torchvision torchaudio
+```
+
+#### ❌ `ModuleNotFoundError: No module named 'tqdm'`
+
+**Solution:** Install missing dependencies:
+```bash
+pip install tqdm requests
+```
+
+#### ❌ Internet connection issues during dataset download
+
+**Solution:** Check your internet connection and try again:
+```bash
+# Remove incomplete download and retry
+rm -rf data/pizza_steak_sushi
+python download_data.py
+```
+
+#### ❌ Permission errors when saving models
+
+**Solution:** Ensure you have write permissions in the directory:
+```bash
+chmod +w models/
+# Or run from a directory where you have write permissions
+```
+
+#### ❌ CUDA out of memory errors
+
+**Solution:** Reduce batch size in train.py:
+```python
+BATCH_SIZE = 16  # or smaller
+```
+
+### Getting Help
+
+If you encounter other issues:
+
+1. **Check the [Issues](https://github.com/CYBki/Food-classification/issues)** page for known problems
+2. **Create a new issue** with:
+   - Your operating system
+   - Python version (`python --version`)
+   - PyTorch version
+   - Complete error message
+   - Steps you've already tried
+
+## 📊 Training Customization
+
+You can customize the training process by modifying the hyperparameters in `train.py`:
+
+```python
+# Setup hyperparameters
+NUM_EPOCHS = 5          # Number of training epochs
+BATCH_SIZE = 32         # Batch size for training
+HIDDEN_UNITS = 10       # Hidden units in the TinyVGG model
+LEARNING_RATE = 0.001   # Learning rate for the optimizer
+```
+
+### Recommended Settings
+
+For **faster training** (CPU):
+```python
+NUM_EPOCHS = 3
+BATCH_SIZE = 16
+```
+
+For **better accuracy** (if you have GPU):
+```python
+NUM_EPOCHS = 10
+BATCH_SIZE = 64
+HIDDEN_UNITS = 20
+```
+
+For **experimentation**:
+```python
+LEARNING_RATE = 0.01    # Higher learning rate
+HIDDEN_UNITS = 50       # More complex model
+```
+
+## 📁 Updated Project Structure
+
+```
+Food-classification/
+├── 📜 download_data.py              # 🆕 Automated dataset download script
+├── 📂 data/                         # Training and test datasets
+│   └── pizza_steak_sushi/           # Food classification dataset
+│       ├── train/                   # Training images (pizza, steak, sushi)
+│       └── test/                    # Test images (pizza, steak, sushi)
+├── 📂 PyTorch_Going_Modular/        # Main modular PyTorch implementation
+│   └── going_modular/
+│       ├── train.py                 # 🔄 Updated training script with better paths & output
+│       ├── data_setup.py            # Data loading utilities
+│       ├── engine.py                # Training/testing loops  
+│       ├── model_builder.py         # Model architectures
+│       ├── predictions.py           # Prediction utilities
+│       └── utils.py                 # Helper functions
+├── 📂 Transfer__learning/           # Transfer learning experiments  
+├── 📂 Experiment_tracking/          # TensorBoard experiment tracking
+├── 📂 PyTorch_paper_replicating/    # Research paper implementations
+├── 📂 Model_deployment/             # Model deployment examples
+├── 📝 Custom_dataset.ipynb          # Custom dataset creation
+├── 📝 helper_functions.py           # Utility functions
+├── 📖 README.md                     # 🔄 Updated documentation
+└── 📄 LICENSE                       # GPL-3.0 License
+```
 
 ## 🍽️ Food Classification Details
 
