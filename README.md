@@ -2,6 +2,11 @@
 
 A comprehensive PyTorch-based deep learning project for classifying food images (pizza, steak, and sushi) using modern computer vision techniques, transfer learning, and modular architecture.
 
+
+https://github.com/user-attachments/assets/815f2038-47d8-4cef-a4c9-99c46659f7e4
+
+
+
 ## 📋 Project Overview
 
 This repository demonstrates practical implementation of PyTorch for food image classification, featuring:
