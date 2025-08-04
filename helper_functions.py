@@ -101,11 +101,11 @@ def plot_predictions(
 
 # Calculate accuracy (a classification metric)
 def accuracy_fn(y_true, y_pred):
-    """Calculates accuracy between truth labels and predictions.
+    """Calculates accuracy between y_true and y_pred.
 
     Args:
-        y_true (torch.Tensor): Truth labels for predictions.
-        y_pred (torch.Tensor): Predictions to be compared to predictions.
+        y_true (torch.Tensor): True labels to be compared to y_pred.
+        y_pred (torch.Tensor): Predictions to be compared to y_true.
 
     Returns:
         [torch.float]: Accuracy value between y_true and y_pred, e.g. 78.45
