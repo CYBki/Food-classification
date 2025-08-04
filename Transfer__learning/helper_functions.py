@@ -229,10 +229,12 @@ def pred_and_plot_image(
     plt.imshow(
         target_image.squeeze().permute(1, 2, 0)
     )  # make sure it's the right size for matplotlib
+    pred_label = target_image_pred_label.cpu().item()
+    pred_prob = target_image_pred_probs.max().cpu().item()
     if class_names:
-        title = f"Pred: {class_names[target_image_pred_label.cpu()]} | Prob: {target_image_pred_probs.max().cpu():.3f}"
+        title = f"Pred: {class_names[pred_label]} | Prob: {pred_prob:.3f}"
     else:
-        title = f"Pred: {target_image_pred_label} | Prob: {target_image_pred_probs.max().cpu():.3f}"
+        title = f"Pred: {pred_label} | Prob: {pred_prob:.3f}"
     plt.title(title)
     plt.axis(False)
 
