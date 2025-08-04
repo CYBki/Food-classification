@@ -122,6 +122,11 @@ tensorboard
    tensorboard --logdir=Experiment_tracking/runs
    ```
 
+4. **Run tests to verify the setup:**
+   ```bash
+   pytest
+   ```
+
 ## 🍽️ Food Classification Details
 
 ### Dataset
