@@ -44,9 +44,10 @@ pip install matplotlib pillow tensorboard
 
 ### Training
 
+The training script builds the dataset paths relative to the repository root, so it can be executed from anywhere as long as the data lives in `data/pizza_steak_sushi`:
+
 ```bash
-cd PyTorch_Going_Modular/going_modular
-python train.py
+python PyTorch_Going_Modular/going_modular/train.py
 ```
 
 TensorBoard logs are written to `Experiment_tracking/runs` and can be viewed with:

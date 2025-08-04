@@ -1,8 +1,6 @@
-"""
-Trains a PyTorch image classification model using device-agnostic code.
-"""
+"""Trains a PyTorch image classification model using device-agnostic code."""
 
-import os
+from pathlib import Path
 
 import torch
 
@@ -18,9 +16,10 @@ BATCH_SIZE = 32
 HIDDEN_UNITS = 10
 LEARNING_RATE = 0.001
 
-# Setup directories
-train_dir = "data/pizza_steak_sushi/train"
-test_dir = "data/pizza_steak_sushi/test"
+# Setup directories relative to the repository root
+data_dir = Path(__file__).resolve().parents[2] / "data" / "pizza_steak_sushi"
+train_dir = data_dir / "train"
+test_dir = data_dir / "test"
 
 # Setup target device
 device = "cuda" if torch.cuda.is_available() else "cpu"
