@@ -26,7 +26,9 @@ def train_step(model: torch.nn.Module,
     device: A target device to compute on (e.g. "cuda" or "cpu").
 
     Returns:
-    A tuple of training loss and training accuracy metrics.
+    A tuple of average training loss per batch and training accuracy across
+    all batches. Accuracy is calculated by dividing the total number of
+    correct predictions by the total number of examples seen.
     In the form (train_loss, train_accuracy). For example:
 
     (0.1112, 0.8743)
@@ -34,8 +36,8 @@ def train_step(model: torch.nn.Module,
     # Put model in train mode
     model.train()
 
-    # Setup train loss and train accuracy values
-    train_loss, train_acc = 0, 0
+    # Setup variables to accumulate metrics
+    train_loss, train_correct, train_samples = 0, 0, 0
 
     # Loop through data loader data batches
     for batch, (X, y) in enumerate(dataloader):
@@ -58,13 +60,14 @@ def train_step(model: torch.nn.Module,
         # 5. Optimizer step
         optimizer.step()
 
-        # Calculate and accumulate accuracy metric across all batches
+        # Calculate and accumulate number of correct predictions
         y_pred_class = torch.argmax(torch.softmax(y_pred, dim=1), dim=1)
-        train_acc += (y_pred_class == y).sum().item()/len(y_pred)
+        train_correct += (y_pred_class == y).sum().item()
+        train_samples += y.size(0)
 
-    # Adjust metrics to get average loss and accuracy per batch 
+    # Adjust metrics to get average loss per batch and overall accuracy
     train_loss = train_loss / len(dataloader)
-    train_acc = train_acc / len(dataloader)
+    train_acc = train_correct / train_samples
     return train_loss, train_acc
 
 def test_step(model: torch.nn.Module, 
@@ -83,7 +86,9 @@ def test_step(model: torch.nn.Module,
     device: A target device to compute on (e.g. "cuda" or "cpu").
 
     Returns:
-    A tuple of testing loss and testing accuracy metrics.
+    A tuple of average testing loss per batch and testing accuracy across
+    all batches. Accuracy is calculated by dividing the total number of
+    correct predictions by the total number of examples seen.
     In the form (test_loss, test_accuracy). For example:
 
     (0.0223, 0.8985)
@@ -91,8 +96,8 @@ def test_step(model: torch.nn.Module,
     # Put model in eval mode
     model.eval() 
 
-    # Setup test loss and test accuracy values
-    test_loss, test_acc = 0, 0
+    # Setup variables to accumulate metrics
+    test_loss, test_correct, test_samples = 0, 0, 0
 
     # Turn on inference context manager
     with torch.inference_mode():
@@ -108,13 +113,14 @@ def test_step(model: torch.nn.Module,
             loss = loss_fn(test_pred_logits, y)
             test_loss += loss.item()
 
-            # Calculate and accumulate accuracy
+            # Calculate and accumulate number of correct predictions
             test_pred_labels = test_pred_logits.argmax(dim=1)
-            test_acc += ((test_pred_labels == y).sum().item()/len(test_pred_labels))
+            test_correct += (test_pred_labels == y).sum().item()
+            test_samples += y.size(0)
 
-    # Adjust metrics to get average loss and accuracy per batch 
+    # Adjust metrics to get average loss per batch and overall accuracy
     test_loss = test_loss / len(dataloader)
-    test_acc = test_acc / len(dataloader)
+    test_acc = test_correct / test_samples
     return test_loss, test_acc
 
 def train(model: torch.nn.Module, 
