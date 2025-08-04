@@ -74,8 +74,10 @@ def pred_and_plot_image(
     # Plot image with predicted label and probability
     plt.figure()
     plt.imshow(img)
+    pred_label = target_image_pred_label.cpu().item()
+    pred_prob = target_image_pred_probs.max().cpu().item()
     plt.title(
-        f"Pred: {class_names[target_image_pred_label]} | Prob: {target_image_pred_probs.max():.3f}"
+        f"Pred: {class_names[pred_label]} | Prob: {pred_prob:.3f}"
     )
     plt.axis(False)
 
