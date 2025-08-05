@@ -27,24 +27,39 @@ Food-classification/
 ### Gereksinimler
 
 - Python 3.8+
-- [PyTorch](https://pytorch.org/)
-- torchvision
-- matplotlib
-- Pillow
-- tensorboard
+- Sisteminizde [Git](https://git-scm.com/) ve bir terminal
+
+Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
 ### Kurulum
 
 ```bash
 git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
-pip install torch torchvision torchaudio
-pip install matplotlib pillow tensorboard
+
+# (İsteğe bağlı) sanal ortam oluşturun
+python -m venv .venv
+source .venv/bin/activate  # Windows için .venv\Scripts\activate
+
+# Bağımlılıkları yükleyin
+pip install -r requirements.txt
 ```
 
 ### Eğitim
 
-Eğitim betiği, veri yolu referanslarını depo köküne göre oluşturur; `data/pizza_steak_sushi` içinde veri bulunduğu sürece herhangi bir konumdan çalıştırılabilir:
+Depo, `data/pizza_steak_sushi` dizini altında küçük bir örnek veri seti içerir. Eğer dizin eksikse aşağıdaki komut ile indirilebilir:
+
+```bash
+python - <<'PY'
+from helper_functions import download_data
+download_data(
+    source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
+    destination="pizza_steak_sushi"
+)
+PY
+```
+
+Veri hazır olduğunda eğitim betiği herhangi bir konumdan çalıştırılabilir:
 
 ```bash
 python PyTorch_Going_Modular/going_modular/train.py
