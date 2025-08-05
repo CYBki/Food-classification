@@ -27,15 +27,26 @@ Food-classification/
 ### Gereksinimler
 
 - Python 3.8+
-- Sisteminizde [Git](https://git-scm.com/) ve bir terminal
+- Sisteminizde [Git](https://git-scm.com/), [Git LFS](https://git-lfs.com/) ve bir terminal
 
 Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
 ### Kurulum
 
+Bu depo bazı büyük dosyalar için Git LFS kullanır. LFS yapılandırılmadıysa veya klonlama
+sırasında LFS nesneleri eksik uyarısı alırsanız aşağıdaki adımları izleyin:
+
 ```bash
-git clone https://github.com/CYBki/Food-classification.git
+# Git LFS'i etkinleştirin
+git lfs install
+
+# LFS dosyalarını indirme işlemini klonlama sırasında atlayın
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
+
+# Eksik dosyaları indirmeyi deneyin (bazıları sunucuda olmayabilir)
+git lfs fetch --all
+git lfs pull
 
 # (İsteğe bağlı) sanal ortam oluşturun
 python -m venv .venv
