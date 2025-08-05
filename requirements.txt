@@ -1,0 +1,9 @@
+torch
+torchvision
+tqdm
+matplotlib
+numpy
+Pillow
+requests
+tensorboard
+pytest
