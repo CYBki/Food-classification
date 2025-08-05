@@ -63,7 +63,8 @@ MODEL_INFO = {
 @st.cache_resource
 def load_model(name: str) -> torch.nn.Module:
     info = MODEL_INFO[name]
-    path = info["path"]
+    # Ensure model paths are absolute so DVC and PyTorch interact correctly
+    path = (REPO_ROOT / info["path"]).resolve()
 
     # If a leftover Git LFS pointer file is present, remove it so DVC can pull the real weights
     if path.exists():
