@@ -33,33 +33,34 @@ Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
 ### Kurulum
 
-Bu depo bazı büyük dosyalar için Git LFS kullanır. Bazı LFS nesneleri sunucuda
-eksik olduğundan doğrudan `git clone` komutu `smudge filter lfs failed`
-hatası verebilir. Sorunsuz bir kurulum için aşağıdaki adımları izleyin:
+Bu depo bazı büyük dosyalar için Git LFS kullanır. LFS sunucusunda bazı
+nesneler eksik olduğundan doğrudan `git clone` komutu `smudge filter lfs failed`
+hatası verebilir. Klonlama sırasında LFS dosyalarını atlayarak kurulum yapın:
 
 ```bash
-# Git LFS'i etkinleştirin
-git lfs install
+# Git LFS'i etkinleştirip büyük dosyaları otomatik indirmeyi atla
+git lfs install --skip-smudge
 
-# LFS dosyalarını klonlama sırasında indirmeyi atlayın
-GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
+# Depoyu klonla (LFS dosyaları indirilmez)
+git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
 
-# (Kalıcı çözüm isterseniz: git lfs install --skip-smudge)
+# (Alternatif: tek seferlik GIT_LFS_SKIP_SMUDGE=1 git clone <URL>)
 
-# Mevcut LFS dosyalarını indirmeyi deneyin (bazıları sunucuda olmayabilir)
+# Mevcut LFS dosyalarını indirmeyi dene (bazıları sunucuda olmayabilir)
 git lfs fetch --all
 git lfs pull || true  # "Object does not exist on the server" uyarıları yok sayılabilir
 
-# (İsteğe bağlı) sanal ortam oluşturun
+# (İsteğe bağlı) sanal ortam oluştur
 python -m venv .venv
 source .venv/bin/activate  # Windows için .venv\Scripts\activate
 
-# Bağımlılıkları yükleyin
+# Bağımlılıkları yükle
 pip install -r requirements.txt  # aksi takdirde `numpy` veya `packaging` gibi modüller eksik olur
 ```
 
-> **Klonlama başarısız olduysa:** Mevcut klasörü silip yukarıdaki adımları kullanarak tekrar deneyin.
+> **Not:** Yanlışlıkla `git clone` çalıştırıp hata alırsanız klasörü silip
+> yukarıdaki komutlarla tekrar deneyin.
 
 
 ### Eğitim
