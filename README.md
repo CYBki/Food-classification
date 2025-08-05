@@ -49,6 +49,9 @@ source .venv/bin/activate  # Windows için .venv\Scripts\activate
 # Bağımlılıkları yükle
 pip install -r requirements.txt
 
+# Farklı bir dizinden çalışıyorsanız dosya yolunu belirtin
+# pip install -r Food-classification/requirements.txt
+
 # Python 3.13 ve üzeri için TensorBoard'un gerektirdiği `imghdr` modülünü ayrıca yükleyin
 # (bu adım `ModuleNotFoundError: imghdr` hatasını giderir)
 # pip install imghdr
@@ -57,14 +60,7 @@ pip install -r requirements.txt
 ## Veri Seti
 Depo, `data/pizza_steak_sushi` dizininde küçük bir örnek veri setiyle çalışacak şekilde tasarlanmıştır. Dizin mevcut değilse aşağıdaki Python komutu ile indirilebilir:
 ```bash
-python - <<'PY'
-from helper_functions import download_data
-
-download_data(
-    source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
-    destination="pizza_steak_sushi"
-)
-PY
+python download_dataset.py
 ```
 
 ## Model Eğitimi
