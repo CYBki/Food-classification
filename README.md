@@ -49,6 +49,9 @@ source .venv/bin/activate  # Windows için .venv\Scripts\activate
 # Bağımlılıkları yükle
 pip install -r requirements.txt
 
+# Farklı bir dizinden çalışıyorsanız dosya yolunu belirtin
+# pip install -r Food-classification/requirements.txt
+
 # Python 3.13 ve üzeri için TensorBoard'un gerektirdiği `imghdr` modülünü ayrıca yükleyin
 # (bu adım `ModuleNotFoundError: imghdr` hatasını giderir)
 # pip install imghdr
@@ -57,14 +60,7 @@ pip install -r requirements.txt
 ## Veri Seti
 Depo, `data/pizza_steak_sushi` dizininde küçük bir örnek veri setiyle çalışacak şekilde tasarlanmıştır. Dizin mevcut değilse aşağıdaki Python komutu ile indirilebilir:
 ```bash
-python - <<'PY'
-from helper_functions import download_data
-
-download_data(
-    source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
-    destination="pizza_steak_sushi"
-)
-PY
+python download_dataset.py
 ```
 
 ## Model Eğitimi
@@ -78,15 +74,18 @@ tensorboard --logdir Experiment_tracking/runs
 ```
 
 ## Web Arayüzü ile Sınıflandırma
-Eğitilen modeli Streamlit tabanlı etkileşimli arayüz üzerinden deneyebilirsiniz. Arayüz, yüklenen görüntüyü ekranda gösterir,
-model tahmini yapılırken ilerleme çubuğu animasyonu sunar ve sonuçlar balon animasyonuyla kutlanır. Ayrıca her sınıfa ait
-olasılık değerleri çubuk grafik olarak görselleştirilir.
+Eğitilen modeller Streamlit tabanlı arayüz üzerinden karşılaştırmalı olarak denenebilir. Bir görsel yükledikten sonra TinyVGG,
+EfficientNet-B0, EfficientNet-B2 ve ViT-B16 gibi farklı mimariler aynı görüntü üzerinde tahmin yapar. Her bir modelin tahmini
+ve olasılık değerleri tabloda listelenir, sınıf olasılıkları ise çubuk grafik üzerinde birlikte gösterilerek mimariler arası
+farklılıklar incelenebilir.
 
 ```bash
 streamlit run app.py
 ```
 
 Komut çalıştıktan sonra açılan sayfadan bir görsel yükleyip model tahminini animasyonlu olarak izleyebilirsiniz.
+
+> **Hata giderme:** Eğer arayüzü çalıştırırken `_pickle.UnpicklingError: invalid load key, 'v'` hatası alırsanız, model ağırlıkları indirilememiş demektir. `git lfs install` ve `git lfs pull` komutlarını tekrar çalıştırarak eksik dosyaları indirin.
 
 ## Testleri Çalıştırma
 Yardımcı fonksiyonların doğru çalıştığından emin olmak için birim testlerini çalıştırın:
