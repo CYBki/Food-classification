@@ -24,23 +24,16 @@ Food-classification/
 ## Kurulum
 ### 1. Gereksinimler
 - Python 3.8+
-- [Git](https://git-scm.com/) ve [Git LFS](https://git-lfs.com/)
+ - [Git](https://git-scm.com/) ve [DVC](https://dvc.org/)
 - İsteğe bağlı olarak bir sanal ortam
 
 Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
 ### 2. Depoyu Klonlama
 ```bash
-# Git LFS'i etkinleştir
-git lfs install
-
-# Depoyu klonla (LFS dosyalarını klonlama sırasında atla)
-GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
+# Depoyu klonla
+git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
-
-# Eksik LFS dosyalarını indirmeyi dene
-git lfs fetch --all
-git lfs pull
 
 # (Opsiyonel) sanal ortam oluştur
 python -m venv .venv
@@ -48,6 +41,12 @@ source .venv/bin/activate  # Windows için .venv\Scripts\activate
 
 # Bağımlılıkları yükle
 pip install -r requirements.txt
+
+# DVC ile gereken model dosyalarını indir
+dvc pull
+# DVC yerel olarak `dvc_storage/` klasörünü uzak depo olarak kullanır.
+# Eğer `dvc pull` sırasında "Missing cache files" uyarısı alırsanız
+# modeli içeren makinede `dvc push` komutunu çalıştırarak bu klasörü doldurun.
 
 # Farklı bir dizinden çalışıyorsanız dosya yolunu belirtin
 # pip install -r Food-classification/requirements.txt
