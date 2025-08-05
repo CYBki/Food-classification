@@ -1,0 +1,4 @@
+outs:
+- md5: f1a0482c837deabe771ae773e8d986e5
+  size: 343271434
+  path: 08_pretrained_vit_feature_extractor_pizza_steak_sushi.pth
