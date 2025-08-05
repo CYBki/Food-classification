@@ -1,8 +1,10 @@
+import time
 import streamlit as st
 import torch
 from torchvision import transforms
 from PIL import Image
 from pathlib import Path
+import pandas as pd
 
 from PyTorch_Going_Modular.going_modular import model_builder
 
@@ -33,11 +35,23 @@ if uploaded_file is not None:
     transform = transforms.Compose([transforms.Resize((64, 64)), transforms.ToTensor()])
     image_tensor = transform(image).unsqueeze(0)
 
-    with torch.inference_mode():
-        preds = model(image_tensor)
-        probs = torch.softmax(preds, dim=1)
-        pred_label = probs.argmax(dim=1).item()
-        pred_class = CLASS_NAMES[pred_label]
-        pred_prob = probs[0][pred_label].item()
+    with st.spinner("Model tahmin ediyor..."):
+        progress_bar = st.progress(0)
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            progress_bar.progress(percent_complete + 1)
 
-    st.write(f"Tahmin: {pred_class} ({pred_prob:.2f})")
+        with torch.inference_mode():
+            preds = model(image_tensor)
+            probs = torch.softmax(preds, dim=1).squeeze()
+
+    pred_label = torch.argmax(probs).item()
+    pred_class = CLASS_NAMES[pred_label]
+    pred_prob = probs[pred_label].item()
+
+    st.success(f"Tahmin: {pred_class} ({pred_prob:.2%})")
+    st.balloons()
+
+    prob_df = pd.DataFrame({"Sınıf": CLASS_NAMES, "Olasılık": probs.tolist()})
+    prob_df = prob_df.set_index("Sınıf")
+    st.bar_chart(prob_df)

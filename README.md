@@ -7,6 +7,7 @@ Bu depo; pizza, biftek ve suşi görüntülerini sınıflandırmak için PyTorch
 - **Modüler yapı:** Veri yükleyicileri, eğitim döngüsü ve model bileşenleri yeniden kullanılabilir şekilde düzenlenmiştir.
 - **Deney takibi:** TensorBoard günlükleri ve model kontrol noktaları saklanır.
 - **Dağıtım örnekleri:** Eğitilen modellerin dışa aktarılması ve kullanılmasına dair basit demolar.
+- **Etkileşimli arayüz:** Streamlit tabanlı animasyonlu arayüz sayesinde yüklenen görseller kolayca sınıflandırılabilir.
 
 ## Depo Yapısı
 ```
@@ -77,11 +78,15 @@ tensorboard --logdir Experiment_tracking/runs
 ```
 
 ## Web Arayüzü ile Sınıflandırma
-Eğitilen modeli Streamlit tabanlı basit bir arayüz üzerinden denemek için:
+Eğitilen modeli Streamlit tabanlı etkileşimli arayüz üzerinden deneyebilirsiniz. Arayüz, yüklenen görüntüyü ekranda gösterir,
+model tahmini yapılırken ilerleme çubuğu animasyonu sunar ve sonuçlar balon animasyonuyla kutlanır. Ayrıca her sınıfa ait
+olasılık değerleri çubuk grafik olarak görselleştirilir.
+
 ```bash
 streamlit run app.py
 ```
-Komut çalıştıktan sonra açılan sayfadan bir görsel yükleyip model tahminini görebilirsiniz.
+
+Komut çalıştıktan sonra açılan sayfadan bir görsel yükleyip model tahminini animasyonlu olarak izleyebilirsiniz.
 
 ## Testleri Çalıştırma
 Yardımcı fonksiyonların doğru çalıştığından emin olmak için birim testlerini çalıştırın:
