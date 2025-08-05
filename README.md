@@ -24,7 +24,7 @@ Food-classification/
 ## Kurulum
 ### 1. Gereksinimler
 - Python 3.8+
-- [Git](https://git-scm.com/) ve [Git LFS](https://git-lfs.com/)
+ - [Git](https://git-scm.com/) ve [DVC](https://dvc.org/)
 - İsteğe bağlı olarak bir sanal ortam
 
 Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.

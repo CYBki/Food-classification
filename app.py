@@ -6,9 +6,13 @@ from pathlib import Path
 import pandas as pd
 from pickle import UnpicklingError
 import subprocess
+import shutil
 
 from PyTorch_Going_Modular.going_modular import model_builder
 
+
+# Repository root (current file lives at project root)
+REPO_ROOT = Path(__file__).resolve().parent
 
 # Available class names for predictions
 CLASS_NAMES = ["pizza", "steak", "sushi"]
@@ -61,23 +65,34 @@ def load_model(name: str) -> torch.nn.Module:
     info = MODEL_INFO[name]
     path = info["path"]
 
+    # If a leftover Git LFS pointer file is present, remove it so DVC can pull the real weights
+    if path.exists():
+        try:
+            if path.read_text().startswith("version https://git-lfs.github.com/spec/v1"):
+                path.unlink()
+        except UnicodeDecodeError:
+            pass
+
     if not path.exists():
-        repo_root = Path(__file__).resolve().parent
         dvc_file = path.with_suffix(path.suffix + ".dvc")
         if dvc_file.exists():
+            if shutil.which("dvc") is None:
+                raise FileNotFoundError(
+                    "DVC command not found. Install DVC and run 'dvc pull' to download the model."
+                )
             try:
                 subprocess.run(
-                    ["dvc", "pull", str(dvc_file)],
-                    cwd=repo_root,
+                    ["dvc", "pull", str(dvc_file.relative_to(REPO_ROOT))],
+                    cwd=REPO_ROOT,
                     check=True,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                 )
-            except Exception as pull_error:
+            except subprocess.CalledProcessError as pull_error:
                 raise FileNotFoundError(
-                    f"Model file not found: {path}. Run 'dvc pull' to download the model."
-                    f" Original error: {pull_error}"
-                )
+                    f"Model file not found: {path}. Run 'dvc pull' to download the model. "
+                    f"Original error: {pull_error.stderr.decode().strip()}"
+                ) from pull_error
         if not path.exists():
             raise FileNotFoundError(
                 f"Model file not found: {path}. Run 'dvc pull' to download the model."
