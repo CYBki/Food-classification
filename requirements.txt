@@ -3,6 +3,7 @@ torchvision
 tqdm
 matplotlib
 numpy
+pandas
 Pillow
 requests
 tensorboard
