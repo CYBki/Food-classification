@@ -76,6 +76,14 @@ Eğitim sırasında oluşan TensorBoard günlükleri `Experiment_tracking/runs` 
 tensorboard --logdir Experiment_tracking/runs
 ```
 
+## Web Arayüzü ile Sınıflandırma
+Eğitilen modeli Streamlit tabanlı basit bir arayüz üzerinden denemek için:
+```bash
+streamlit run app.py
+```
+Komut çalıştıktan sonra açılan sayfadan bir görsel yükleyip model tahminini görebilirsiniz.
+Model yalnızca pizza, biftek ve suşi sınıfları için eğitimlidir; farklı yiyecekler yanlış sonuç verebilir.
+
 ## Testleri Çalıştırma
 Yardımcı fonksiyonların doğru çalıştığından emin olmak için birim testlerini çalıştırın:
 ```bash
