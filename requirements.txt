@@ -8,3 +8,4 @@ requests
 tensorboard
 imghdr
 pytest
+streamlit
