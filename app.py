@@ -62,69 +62,36 @@ def load_model(name: str) -> torch.nn.Module:
     path = info["path"]
 
     if not path.exists():
-        raise FileNotFoundError(
-            f"Model file not found: {path}. Did you run 'git lfs pull'?"
-        )
-
-    # Check if file is a Git LFS pointer before attempting to load
-    try:
-        # Try to read the first few bytes as text to detect LFS pointer
-        with open(path, 'rb') as f:
-            first_bytes = f.read(50)
-
-        # Check if it's a text file starting with 'version'
-        try:
-            first_text = first_bytes.decode('utf-8')
-            if first_text.startswith("version https://git-lfs.github.com"):
-                repo_root = Path(__file__).resolve().parent
-                try:
-                    subprocess.run(
-                        ["git", "lfs", "pull", "--include", str(path)],
-                        cwd=repo_root,
-                        check=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                    )
-                except Exception as pull_error:
-                    raise RuntimeError(
-                        f"{path} is a Git LFS pointer file and automatic 'git lfs pull' failed: {pull_error}"
-                    )
-                else:
-                    # Re-read bytes after attempting pull
-                    with open(path, 'rb') as f:
-                        first_bytes = f.read(50)
-                    try:
-                        first_text = first_bytes.decode('utf-8')
-                    except UnicodeDecodeError:
-                        first_text = ""
-                    if first_text.startswith("version https://git-lfs.github.com"):
-                        raise RuntimeError(
-                            f"{path} is a Git LFS pointer file. Install Git LFS and run 'git lfs pull' to download the actual model weights."
-                        )
-        except UnicodeDecodeError:
-            # Binary file as expected, continue
-            pass
-    except Exception as e:
-        if "Git LFS" in str(e):
-            raise e
+        repo_root = Path(__file__).resolve().parent
+        dvc_file = path.with_suffix(path.suffix + ".dvc")
+        if dvc_file.exists():
+            try:
+                subprocess.run(
+                    ["dvc", "pull", str(dvc_file)],
+                    cwd=repo_root,
+                    check=True,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+            except Exception as pull_error:
+                raise FileNotFoundError(
+                    f"Model file not found: {path}. Run 'dvc pull' to download the model."
+                    f" Original error: {pull_error}"
+                )
+        if not path.exists():
+            raise FileNotFoundError(
+                f"Model file not found: {path}. Run 'dvc pull' to download the model."
+            )
 
     model = info["builder"]()
     try:
         state_dict = torch.load(path, map_location="cpu")
     except (UnpicklingError, RuntimeError, EOFError) as e:
-        # Check file size - LFS pointers are typically very small
-        file_size = path.stat().st_size
-        if file_size < 1000:  # Less than 1KB is likely a pointer file
-            raise RuntimeError(
-                f"Model file {path} appears to be a Git LFS pointer (size: {file_size} bytes). "
-                f"Install Git LFS and run 'git lfs pull' to download the actual weights."
-            )
-        else:
-            raise RuntimeError(
-                f"Failed to load PyTorch model from {path}. "
-                f"The file might be corrupted or not a valid PyTorch state dict. "
-                f"Original error: {str(e)}"
-            ) from e
+        raise RuntimeError(
+            f"Failed to load PyTorch model from {path}. "
+            f"The file might be corrupted or not a valid PyTorch state dict. "
+            f"Original error: {str(e)}"
+        ) from e
 
     model.load_state_dict(state_dict)
     model.eval()

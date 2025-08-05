@@ -10,3 +10,4 @@ tensorboard
 imghdr
 pytest
 streamlit
+dvc
