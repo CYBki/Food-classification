@@ -33,18 +33,19 @@ Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
 ### Kurulum
 
-Bu depo bazı büyük dosyalar için Git LFS kullanır, ancak bazı LFS nesneleri sunucuda eksik
-olduğundan doğrudan `git clone` komutu `smudge filter lfs failed` hatasıyla sonuçlanabilir.
-Sorunsuz bir kurulum için aşağıdaki adımları izleyin:
+Bu depo bazı büyük dosyalar için Git LFS kullanır. Bazı LFS nesneleri sunucuda
+eksik olduğundan doğrudan `git clone` komutu `smudge filter lfs failed`
+hatası verebilir. Sorunsuz bir kurulum için aşağıdaki adımları izleyin:
 
 ```bash
-# Klonlama sırasında LFS dosyalarını atla
-git lfs install --skip-smudge
-git clone https://github.com/CYBki/Food-classification.git
+# Git LFS'i etkinleştirin
+git lfs install
+
+# LFS dosyalarını klonlama sırasında indirmeyi atlayın
+GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
 
-# (Alternatif tek seferlik yöntem)
-# GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
+# (Kalıcı çözüm isterseniz: git lfs install --skip-smudge)
 
 # Mevcut LFS dosyalarını indirmeyi deneyin (bazıları sunucuda olmayabilir)
 git lfs fetch --all
