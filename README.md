@@ -47,6 +47,10 @@ source .venv/bin/activate  # Windows için .venv\Scripts\activate
 
 # Bağımlılıkları yükle
 pip install -r requirements.txt
+
+# Python 3.13 ve üzeri için TensorBoard'un gerektirdiği `imghdr` modülünü ayrıca yükleyin
+# (bu adım `ModuleNotFoundError: imghdr` hatasını giderir)
+# pip install imghdr
 ```
 
 ## Veri Seti
@@ -77,6 +81,7 @@ Yardımcı fonksiyonların doğru çalıştığından emin olmak için birim tes
 ```bash
 pytest
 ```
+`pytest` komutu bulunamıyorsa bağımlılıkların yüklendiğinden ve doğru Python ortamının aktif olduğundan emin olun.
 
 ## Katkıda Bulunma
 Pull request göndermeden önce lütfen tüm testleri çalıştırın ve gerekliyse dokümantasyonu güncelleyin.
