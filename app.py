@@ -4,6 +4,7 @@ from torchvision import transforms, models
 from PIL import Image
 from pathlib import Path
 import pandas as pd
+from pickle import UnpicklingError
 
 from PyTorch_Going_Modular.going_modular import model_builder
 
@@ -57,8 +58,51 @@ MODEL_INFO = {
 @st.cache_resource
 def load_model(name: str) -> torch.nn.Module:
     info = MODEL_INFO[name]
+    path = info["path"]
+
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Model file not found: {path}. Did you run 'git lfs pull'?"
+        )
+
+    # Check if file is a Git LFS pointer before attempting to load
+    try:
+        # Try to read the first few bytes as text to detect LFS pointer
+        with open(path, 'rb') as f:
+            first_bytes = f.read(50)
+        
+        # Check if it's a text file starting with 'version'
+        try:
+            first_text = first_bytes.decode('utf-8')
+            if first_text.startswith("version https://git-lfs.github.com"):
+                raise RuntimeError(
+                    f"{path} is a Git LFS pointer file. Install Git LFS and run 'git lfs pull' to download the actual model weights."
+                )
+        except UnicodeDecodeError:
+            # Binary file as expected, continue
+            pass
+    except Exception as e:
+        if "Git LFS" in str(e):
+            raise e
+
     model = info["builder"]()
-    state_dict = torch.load(info["path"], map_location="cpu")
+    try:
+        state_dict = torch.load(path, map_location="cpu")
+    except (UnpicklingError, RuntimeError, EOFError) as e:
+        # Check file size - LFS pointers are typically very small
+        file_size = path.stat().st_size
+        if file_size < 1000:  # Less than 1KB is likely a pointer file
+            raise RuntimeError(
+                f"Model file {path} appears to be a Git LFS pointer (size: {file_size} bytes). "
+                f"Install Git LFS and run 'git lfs pull' to download the actual weights."
+            )
+        else:
+            raise RuntimeError(
+                f"Failed to load PyTorch model from {path}. "
+                f"The file might be corrupted or not a valid PyTorch state dict. "
+                f"Original error: {str(e)}"
+            ) from e
+
     model.load_state_dict(state_dict)
     model.eval()
     return model
@@ -84,7 +128,12 @@ if uploaded_file and selected_models:
     summary_rows = []
 
     for model_name in selected_models:
-        model = load_model(model_name)
+        try:
+            model = load_model(model_name)
+        except Exception as e:
+            st.error(f"Error loading {model_name}: {str(e)}")
+            continue
+
         transform = MODEL_INFO[model_name]["transform"]
         image_tensor = transform(image).unsqueeze(0)
 
@@ -103,9 +152,9 @@ if uploaded_file and selected_models:
         )
         results[model_name] = probs.tolist()
 
-    st.subheader("Tahmin Karşılaştırması")
-    st.table(pd.DataFrame(summary_rows))
+    if summary_rows:  # Only show results if we have any successful predictions
+        st.subheader("Tahmin Karşılaştırması")
+        st.table(pd.DataFrame(summary_rows))
 
-    chart_df = pd.DataFrame(results, index=CLASS_NAMES)
-    st.bar_chart(chart_df)
-
+        chart_df = pd.DataFrame(results, index=CLASS_NAMES)
+        st.bar_chart(chart_df)
