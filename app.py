@@ -61,7 +61,9 @@ def load_model(name: str) -> torch.nn.Module:
     path = info["path"]
 
     if not path.exists():
-        raise FileNotFoundError(f"Model file not found: {path}. Did you run 'git lfs pull'?" )
+        raise FileNotFoundError(
+            f"Model file not found: {path}. Did you run 'git lfs pull'?"
+        )
 
     # Detect Git LFS pointer files which are plain text and start with 'version https://'
     try:
