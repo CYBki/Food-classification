@@ -78,9 +78,10 @@ tensorboard --logdir Experiment_tracking/runs
 ```
 
 ## Web Arayüzü ile Sınıflandırma
-Eğitilen modeli Streamlit tabanlı etkileşimli arayüz üzerinden deneyebilirsiniz. Arayüz, yüklenen görüntüyü ekranda gösterir,
-model tahmini yapılırken ilerleme çubuğu animasyonu sunar ve sonuçlar balon animasyonuyla kutlanır. Ayrıca her sınıfa ait
-olasılık değerleri çubuk grafik olarak görselleştirilir.
+Eğitilen modeller Streamlit tabanlı arayüz üzerinden karşılaştırmalı olarak denenebilir. Bir görsel yükledikten sonra TinyVGG,
+EfficientNet-B0, EfficientNet-B2 ve ViT-B16 gibi farklı mimariler aynı görüntü üzerinde tahmin yapar. Her bir modelin tahmini
+ve olasılık değerleri tabloda listelenir, sınıf olasılıkları ise çubuk grafik üzerinde birlikte gösterilerek mimariler arası
+farklılıklar incelenebilir.
 
 ```bash
 streamlit run app.py
