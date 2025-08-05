@@ -5,6 +5,7 @@ from PIL import Image
 from pathlib import Path
 import pandas as pd
 from pickle import UnpicklingError
+import subprocess
 
 from PyTorch_Going_Modular.going_modular import model_builder
 
@@ -70,14 +71,36 @@ def load_model(name: str) -> torch.nn.Module:
         # Try to read the first few bytes as text to detect LFS pointer
         with open(path, 'rb') as f:
             first_bytes = f.read(50)
-        
+
         # Check if it's a text file starting with 'version'
         try:
             first_text = first_bytes.decode('utf-8')
             if first_text.startswith("version https://git-lfs.github.com"):
-                raise RuntimeError(
-                    f"{path} is a Git LFS pointer file. Install Git LFS and run 'git lfs pull' to download the actual model weights."
-                )
+                repo_root = Path(__file__).resolve().parent
+                try:
+                    subprocess.run(
+                        ["git", "lfs", "pull", "--include", str(path)],
+                        cwd=repo_root,
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                    )
+                except Exception as pull_error:
+                    raise RuntimeError(
+                        f"{path} is a Git LFS pointer file and automatic 'git lfs pull' failed: {pull_error}"
+                    )
+                else:
+                    # Re-read bytes after attempting pull
+                    with open(path, 'rb') as f:
+                        first_bytes = f.read(50)
+                    try:
+                        first_text = first_bytes.decode('utf-8')
+                    except UnicodeDecodeError:
+                        first_text = ""
+                    if first_text.startswith("version https://git-lfs.github.com"):
+                        raise RuntimeError(
+                            f"{path} is a Git LFS pointer file. Install Git LFS and run 'git lfs pull' to download the actual model weights."
+                        )
         except UnicodeDecodeError:
             # Binary file as expected, continue
             pass
