@@ -90,9 +90,16 @@ def load_model(name: str) -> torch.nn.Module:
                     stderr=subprocess.PIPE,
                 )
             except subprocess.CalledProcessError as pull_error:
+                err = pull_error.stderr.decode().strip()
+                if "Missing cache files" in err or "does not exist" in err:
+                    hint = (
+                        "DVC reports missing cache data. Ensure the DVC remote is populated "
+                        "(run 'dvc push' on a machine with the model weights) before pulling."
+                    )
+                else:
+                    hint = f"Original error: {err}"
                 raise FileNotFoundError(
-                    f"Model file not found: {path}. Run 'dvc pull' to download the model. "
-                    f"Original error: {pull_error.stderr.decode().strip()}"
+                    f"Model file not found: {path}. Run 'dvc pull' to download the model. {hint}"
                 ) from pull_error
         if not path.exists():
             raise FileNotFoundError(
