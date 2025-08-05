@@ -1,19 +1,17 @@
 # PyTorch ile Gıda Sınıflandırma
 
-Bu proje pizza, biftek ve suşi görüntülerini PyTorch kullanarak sınıflandırmak için hazırlanmıştır. Depo; veri hazırlama, model eğitimi, değerlendirme ve deney takibi gibi uçtan uca bir derin öğrenme iş akışı sunar.
+Bu depo; pizza, biftek ve suşi görüntülerini sınıflandırmak için PyTorch tabanlı örnekler içerir. Veri hazırlamadan model eğitimine, TensorBoard ile deney takibinden basit dağıtım senaryolarına kadar uçtan uca bir iş akışı sunar.
 
-## Öne Çıkanlar
-
-- **Çeşitli modeller:** Özel CNN mimarileri, EfficientNet ve Vision Transformer.
-- **Modüler yapı:** Veri yükleme, eğitim döngüsü ve model oluşturma için yeniden kullanılabilir bileşenler.
-- **Deney takibi:** TensorBoard ile kayıtlar ve saklanan kontrol noktaları.
-- **Dağıtım örnekleri:** Eğitilmiş modelleri dışa aktarma ve kullanma senaryoları.
+## Özellikler
+- **Çoklu mimariler:** Özel CNN modelleri, EfficientNet ve Vision Transformer.
+- **Modüler yapı:** Veri yükleyicileri, eğitim döngüsü ve model bileşenleri yeniden kullanılabilir şekilde düzenlenmiştir.
+- **Deney takibi:** TensorBoard günlükleri ve model kontrol noktaları saklanır.
+- **Dağıtım örnekleri:** Eğitilen modellerin dışa aktarılması ve kullanılmasına dair basit demolar.
 
 ## Depo Yapısı
-
 ```
 Food-classification/
-├── data/                      # pizza_steak_sushi veri seti
+├── data/                      # pizza_steak_sushi veri seti (opsiyonel)
 ├── Experiment_tracking/       # TensorBoard günlükleri ve kontrol noktaları
 ├── Model_deployment/          # basit dağıtım demoları
 ├── PyTorch_Going_Modular/     # modüler eğitim pipeline'ı
@@ -22,47 +20,41 @@ Food-classification/
 └── README.md
 ```
 
-## Başlangıç
-
-### Gereksinimler
-
+## Kurulum
+### 1. Gereksinimler
 - Python 3.8+
-- Sisteminizde [Git](https://git-scm.com/), [Git LFS](https://git-lfs.com/) ve bir terminal
+- [Git](https://git-scm.com/) ve [Git LFS](https://git-lfs.com/)
+- İsteğe bağlı olarak bir sanal ortam
 
 Gerekli Python paketleri `requirements.txt` dosyasında listelenmiştir.
 
-### Kurulum
-
-Bu depo bazı büyük dosyalar için Git LFS kullanır. LFS yapılandırılmadıysa veya klonlama
-sırasında LFS nesneleri eksik uyarısı alırsanız aşağıdaki adımları izleyin:
-
+### 2. Depoyu Klonlama
 ```bash
-# Git LFS'i etkinleştirin
+# Git LFS'i etkinleştir
 git lfs install
 
-# LFS dosyalarını indirme işlemini klonlama sırasında atlayın
+# Depoyu klonla (LFS dosyalarını klonlama sırasında atla)
 GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/CYBki/Food-classification.git
 cd Food-classification
 
-# Eksik dosyaları indirmeyi deneyin (bazıları sunucuda olmayabilir)
+# Eksik LFS dosyalarını indirmeyi dene
 git lfs fetch --all
 git lfs pull
 
-# (İsteğe bağlı) sanal ortam oluşturun
+# (Opsiyonel) sanal ortam oluştur
 python -m venv .venv
 source .venv/bin/activate  # Windows için .venv\Scripts\activate
 
-# Bağımlılıkları yükleyin
+# Bağımlılıkları yükle
 pip install -r requirements.txt
 ```
 
-### Eğitim
-
-Depo, `data/pizza_steak_sushi` dizini altında küçük bir örnek veri seti içerir. Eğer dizin eksikse aşağıdaki komut ile indirilebilir:
-
+## Veri Seti
+Depo, `data/pizza_steak_sushi` dizininde küçük bir örnek veri setiyle çalışacak şekilde tasarlanmıştır. Dizin mevcut değilse aşağıdaki Python komutu ile indirilebilir:
 ```bash
 python - <<'PY'
 from helper_functions import download_data
+
 download_data(
     source="https://github.com/mrdbourke/pytorch-deep-learning/raw/main/data/pizza_steak_sushi.zip",
     destination="pizza_steak_sushi"
@@ -70,34 +62,27 @@ download_data(
 PY
 ```
 
-Veri hazır olduğunda eğitim betiği herhangi bir konumdan çalıştırılabilir:
-
+## Model Eğitimi
+Veri seti hazır olduktan sonra model eğitimi herhangi bir konumdan aşağıdaki komut ile başlatılabilir:
 ```bash
 python PyTorch_Going_Modular/going_modular/train.py
 ```
-
-TensorBoard günlükleri `Experiment_tracking/runs` dizinine yazılır ve şu şekilde görüntülenebilir:
-
+Eğitim sırasında oluşan TensorBoard günlükleri `Experiment_tracking/runs` dizinine yazılır. Kayıtları görmek için:
 ```bash
-tensorboard --logdir ../../Experiment_tracking/runs
+tensorboard --logdir Experiment_tracking/runs
 ```
 
-### Testler
-
-Yardımcı fonksiyonları doğrulamak için birim testlerini çalıştırın:
-
+## Testleri Çalıştırma
+Yardımcı fonksiyonların doğru çalıştığından emin olmak için birim testlerini çalıştırın:
 ```bash
 pytest
 ```
 
 ## Katkıda Bulunma
-
-Katkılar memnuniyetle karşılanır. Lütfen değişikliklerinizi test edin ve gerekirse dokümantasyonu güncelleyin.
+Pull request göndermeden önce lütfen tüm testleri çalıştırın ve gerekliyse dokümantasyonu güncelleyin.
 
 ## Lisans
-
-Bu proje [GNU General Public License v3.0](LICENSE) altında dağıtılmaktadır.
+Bu proje [GNU General Public License v3.0](LICENSE) ile lisanslanmıştır.
 
 ## Teşekkür
-
-"PyTorch Going Modular" serisine ve geniş PyTorch topluluğuna teşekkürler.
+"PyTorch Going Modular" serisi ve geniş PyTorch topluluğuna katkılarından ötürü teşekkür ederiz.
