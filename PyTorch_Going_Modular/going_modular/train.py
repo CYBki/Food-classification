@@ -11,7 +11,7 @@ import data_setup, engine, model_builder, utils
 
 
 # Setup hyperparameters
-NUM_EPOCHS = 5
+NUM_EPOCHS = 100
 BATCH_SIZE = 32
 HIDDEN_UNITS = 10
 LEARNING_RATE = 0.001
