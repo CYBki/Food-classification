@@ -1,5 +1,9 @@
 # PyTorch ile Gıda Sınıflandırma
 
+
+https://github.com/user-attachments/assets/fd9705a3-b894-40a6-bb5f-bf3e3bcce6c3
+
+
 Bu depo; pizza, biftek ve suşi görüntülerini sınıflandırmak için PyTorch tabanlı örnekler içerir. Veri hazırlamadan model eğitimine, TensorBoard ile deney takibinden basit dağıtım senaryolarına kadar uçtan uca bir iş akışı sunar.
 
 ## Özellikler
